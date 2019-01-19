@@ -3,7 +3,10 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <Authors>Oleg Bryukhanov</Authors>
-        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <PackageProjectUrl>https://github.com/siberianstark/ServiceCollection.RegisterOption</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/siberianstark/ServiceCollection.RegisterOption</RepositoryUrl>
+        <RepositoryType>GIT</RepositoryType>
+        <PackageVersion>1.0.1</PackageVersion>
     </PropertyGroup>
 
     <ItemGroup>

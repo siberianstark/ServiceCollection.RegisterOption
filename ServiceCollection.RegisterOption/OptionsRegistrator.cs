@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ServiceCollection.RegisterOption
@@ -6,13 +7,12 @@ namespace ServiceCollection.RegisterOption
     public static class OptionsRegistrator
     {
         private const string DefaultOptionsPostfix = "Options";
-        
-        public static IServiceCollection RegisterOptions<TOptions>(this IServiceCollection serviceCollection,
-            IConfiguration configuration, string sectionName = null) where TOptions: class
+
+        private static string GetSectionName<TOptions>(string sectionName) where TOptions: class
         {
             if (string.IsNullOrEmpty(sectionName))
             {
-                var genericClassOptionsName = nameof(TOptions);
+                var genericClassOptionsName = typeof(TOptions).Name;
 
                 if (genericClassOptionsName.EndsWith(DefaultOptionsPostfix))
                 {
@@ -22,8 +22,30 @@ namespace ServiceCollection.RegisterOption
 
                 sectionName = genericClassOptionsName;
             }
-            
+
+            return sectionName;
+        }
+        
+        /// <summary>
+        /// IServiceCollection options registration extension
+        /// </summary>
+        /// <param name="serviceCollection"></param>
+        /// <param name="configuration"></param>
+        /// <param name="sectionName"></param>
+        /// <typeparam name="TOptions"></typeparam>
+        /// <returns></returns>
+        public static IServiceCollection RegisterOptions<TOptions>(this IServiceCollection serviceCollection,
+            IConfiguration configuration, string sectionName = null) where TOptions: class
+        {
+            sectionName = GetSectionName<TOptions>(sectionName);
             return serviceCollection.Configure<TOptions>(configuration.GetSection(sectionName));
+        }
+        
+        public static IServiceCollection RegisterOptions<TOptions>(this IServiceCollection serviceCollection,
+            IConfiguration configuration, Action<BinderOptions> configureBinder, string sectionName = null) where TOptions: class
+        {
+            sectionName = GetSectionName<TOptions>(sectionName);
+            return serviceCollection.Configure<TOptions>(configuration.GetSection(sectionName), configureBinder);
         }
     }
 }
