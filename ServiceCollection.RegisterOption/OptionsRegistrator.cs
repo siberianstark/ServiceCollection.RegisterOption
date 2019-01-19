@@ -41,11 +41,23 @@ namespace ServiceCollection.RegisterOption
             return serviceCollection.Configure<TOptions>(configuration.GetSection(sectionName));
         }
         
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serviceCollection"></param>
+        /// <param name="configuration"></param>
+        /// <param name="postConfigureBinder"></param>
+        /// <param name="sectionName"></param>
+        /// <typeparam name="TOptions"></typeparam>
+        /// <returns></returns>
         public static IServiceCollection RegisterOptions<TOptions>(this IServiceCollection serviceCollection,
-            IConfiguration configuration, Action<BinderOptions> configureBinder, string sectionName = null) where TOptions: class
+            IConfiguration configuration, Action<TOptions> postConfigureBinder, string sectionName = null) where TOptions: class
         {
             sectionName = GetSectionName<TOptions>(sectionName);
-            return serviceCollection.Configure<TOptions>(configuration.GetSection(sectionName), configureBinder);
+            serviceCollection.Configure<TOptions>(configuration.GetSection(sectionName));
+            serviceCollection.PostConfigure<TOptions>(postConfigureBinder);
+
+            return serviceCollection;
         }
     }
 }
